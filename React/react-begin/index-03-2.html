@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组件的三大属性--props</title>
+</head>
+
+<body>
+
+    <div id="app"></div>
+
+
+
+    <script src="./lib/react.development.js"></script>
+    <script src="./lib/react-dom.development.js"></script>
+    <script src="./lib/babel.min.js"></script>
+    <!-- prop-types可进行类型检测 -->
+    <script src="./lib/prop-types.js"></script>
+
+    <script type="text/babel">
+    //props属性是定义在组件外边的，有组件外边向组件里边传值，组件内部不改变props的内存地址
+    class MyComponent extends React.Component{
+        constructor(props){
+            super(props);
+        }
+
+        render(){        
+            const person=this.props;
+
+            return(
+                <div>                         
+                    <ul>
+                        <li>姓名：{person.name}</li>
+                        <li>性别：{person.sex}</li>
+                        <li>年龄：{person.age}</li>
+                    </ul>
+                </div>
+            )
+        }
+    }
+
+
+    const person={
+        name:"拾柒",
+        sex:'女',
+        // age:'16'
+    }
+
+    //设置必填值的属性为string
+    MyComponent.propTypes={
+        name:PropTypes.string.isRequired
+    }
+    //设置默认值
+    MyComponent.defaultProps={
+        sex:'男',
+        age:'18'
+    }
+
+    ReactDOM.render(<MyComponent {...person}/>,document.getElementById("app"));
+
+
+        
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>过山车</title>
+		<style type="text/css">
+			body {
+				margin: 0;
+				overflow: hidden;
+			}
+		</style>
+		<script src="js/three/build/three.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/three/examples-js/RollerCoaster.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/three/examples-js-vr/WebVR.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+
+		<script type="text/javascript">
+			//创建场景			
+			var scene = new THREE.Scene();
+			scene.background = new THREE.Color(0xf0f0ff); //设置场景对象背景颜色
+
+			//创建半球光源 并设置光的颜色和底色
+			var light = new THREE.HemisphereLight(0xfff0f0, 0x606066);
+			light.position.set(1, 1, 1); //设置光源位置
+			scene.add(light); //将光添加到场景中
+
+			//创建一个3D对象---列车
+			var train = new THREE.Object3D();
+			scene.add(train); //将这个列车添加到场景中
+
+			//创建一个远景相机对象
+			var camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 500);
+			train.add(camera); //将相机添加到列车中【列车就有相机功能了】
+
+			//创建一个平面缓存几何模型
+			var geometry = new THREE.PlaneBufferGeometry(500, 500, 15, 15);
+			geometry.rotateX(-Math.PI / 2); //x轴上旋转
+
+			var positions = geometry.attributes.position.array;
+			var vertex = new THREE.Vector3();
+
+			for (var i = 0; i < positions.length; i += 3) {
+
+				vertex.fromArray(positions, i);
+				vertex.x += Math.random() * 10 - 5;
+				vertex.y += Math.random() * 10 - 5;
+
+				var distance = (vertex.distanceTo(scene.position) / 5) - 25;
+				vertex.y = Math.random() * Math.max(0, distance);
+				vertex.toArray(positions, i);
+
+			}
+
+			geometry.computeVertexNormals();
+
+
+			//设置材料信息-(网状材料)
+			var material = new THREE.MeshLambertMaterial({
+				color: 0x4070000
+			});
+
+			//创建一个网格对象
+			var mesh = new THREE.Mesh(geometry, material);
+			scene.add(mesh); //制造山
+
+			var geometry = new TreesGeometry(mesh);
+			var material = new THREE.MeshBasicMaterial({
+				side: THREE.DoubleSide,
+				vertexColors: THREE.VertexColors
+			});
+			var mesh = new THREE.Mesh(geometry, material);
+			scene.add(mesh); //制造了数
+
+			var geometry = new SkyGeometry();
+			var material = new THREE.MeshBasicMaterial({
+				color: 0xffffff
+			});
+			var mesh = new THREE.Mesh(geometry, material);
+			scene.add(mesh); //制造了云 
+
+
+			//开始制造轨道
+			var PI2 = Math.PI * 2;
+
+			var curve = (function() {
+				var vector = new THREE.Vector3();
+				var vector2 = new THREE.Vector3();
+				return {
+					getPointAt: function(t) {
+						t = t * PI2;
+						var x = Math.sin(t * 3) * Math.cos(t * 4) * 50;
+						var y = Math.sin(t * 10) * 2 + Math.cos(t * 17) * 2 + 5;
+						var z = Math.sin(t) * Math.sin(t * 4) * 50;
+						return vector.set(x, y, z).multiplyScalar(2);
+					},
+					getTangentAt: function(t) {
+						var delta = 0.0001;
+						var t1 = Math.max(0, t - delta);
+						var t2 = Math.min(1, t + delta);
+						return vector2.copy(this.getPointAt(t2))
+							.sub(this.getPointAt(t1)).normalize();
+					}
+				};
+			})();
+			var geometry = new RollerCoasterGeometry(curve, 1500);
+			var material = new THREE.MeshPhongMaterial({
+				vertexColors: THREE.VertexColors
+			});
+			var mesh = new THREE.Mesh(geometry, material);
+			scene.add(mesh); //轨道添加
+
+			var geometry = new RollerCoasterLiftersGeometry(curve, 100);
+			var material = new THREE.MeshPhongMaterial();
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.position.y = 0.1;
+			scene.add(mesh); //轨道支架添加到场景中
+
+			// understand 1
+			// var geometry = new RollerCoasterShadowGeometry(curve, 500);
+			// var material = new THREE.MeshBasicMaterial({
+			// 	color: 0x305000,
+			// 	depthWrite: false,
+			// 	transparent: true
+			// });
+			// var mesh = new THREE.Mesh(geometry, material);
+			// mesh.position.y = 0.1;
+			// scene.add(mesh);
+
+
+			// understand 2
+			var funfairs = [];
+			var geometry = new THREE.CylinderBufferGeometry(10, 10, 5, 15);
+			var material = new THREE.MeshLambertMaterial({
+				color: 0xff8080,				
+			});
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.position.set(-80, 10, -70);
+			mesh.rotation.x = Math.PI / 2;
+			scene.add(mesh);
+			funfairs.push(mesh);
+
+			// understand 3
+			// var geometry = new THREE.CylinderBufferGeometry(5, 6, 4, 10);
+			// var material = new THREE.MeshLambertMaterial({
+			// 	color: 0x8080ff,
+			// 	//flatShading: true // Lambert does not support flat shading
+			// });
+			// var mesh = new THREE.Mesh(geometry, material);
+			// mesh.position.set(50, 2, 30);
+			// scene.add(mesh);
+			// funfairs.push(mesh);
+
+
+			// window.addEventListener( 'resize', onWindowResize, false );
+
+			// function onWindowResize() {
+
+			// 	camera.aspect = window.innerWidth / window.innerHeight;
+			// 	camera.updateProjectionMatrix();
+
+			// 	renderer.setSize( window.innerWidth, window.innerHeight );
+
+			// }
+
+			var position = new THREE.Vector3();
+			var tangent = new THREE.Vector3();
+
+			var lookAt = new THREE.Vector3();
+
+			var velocity = 0;
+			var progress = 0;
+
+			var prevTime = performance.now();
+
+			//创建一个渲染器
+			var renderer = new THREE.WebGLRenderer({
+				antialias: true
+			});
+			//设置设备像素比
+			renderer.setPixelRatio(window.devicePixelRatio);
+			//设置渲染大小
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			//启用vr
+			renderer.vr.enabled = true;
+			renderer.vr.userHeight = 0;
+			document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+			document.body.appendChild(WEBVR.createButton(renderer)); ////body元素中插入VR对象
+
+
+
+			function render() {
+				var time = performance.now();
+				var delta = time - prevTime;
+
+				for (var i = 0; i < funfairs.length; i++) {
+
+					funfairs[i].rotation.y = time * 0.0004;
+				}		
+				progress += velocity;
+				progress = progress % 1;
+
+				position.copy(curve.getPointAt(progress));
+				position.y += 0.3;
+
+				train.position.copy(position);
+
+				tangent.copy(curve.getTangentAt(progress));
+
+				velocity -= tangent.y * 0.0000001 * delta;
+				velocity = Math.max(0.00004, Math.min(0.0002, velocity));
+
+				train.lookAt(lookAt.copy(position).sub(tangent));
+				renderer.render(scene, camera);
+				prevTime = time;
+			}
+			renderer.animate(render);
+		</script>
+	</body>
+</html>

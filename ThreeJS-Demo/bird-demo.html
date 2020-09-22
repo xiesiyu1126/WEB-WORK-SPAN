@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>小鸟乱飞</title>
+		<style type="text/css">
+			body {
+				margin: 0;
+				overflow: hidden;
+			}
+		</style>
+
+		<!-- 引入threeJS引擎 -->
+		<script src="js/three/build/three.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/three/examples-js-renderers/Projector.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/three/examples-js-renderers/CanvasRenderer.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/three/examples-js-libs/stats.min.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<script type="text/javascript">
+			// 创建飞鸟对象
+			var Bird = function() {
+				var scope = this;
+				THREE.Geometry.call(this);
+
+
+				// 添加顶点位置方法
+				function v(x, y, z) {
+					scope.vertices.push(new THREE.Vector3(x, y, z));
+				}
+
+				//添加三角面方法
+				function f(a, b, c) {
+					scope.faces.push(new THREE.Face3(a, b, c));
+				}
+
+			}
+		</script>
+
+		<script type="text/javascript">
+			var SCREEN_WIDTH = window.innerWidth;
+			var SCREEN_HEIGHT = window.innerHeight;
+			var SCREEN_WIDTH_HALF = SCREEN_WIDTH / 2;
+			var SCREEN_HEIGHT_HALF = SCREEN_HEIGHT / 2;
+
+			var camera, scene, renderer, birds, bird;
+			var boid, boids;
+
+			var stats;
+			init();
+			animate();
+
+
+
+			// 初始化方法
+
+			function init() {
+				//创建一个远景相机
+				camera = new THREE.PerspectiveCamera(75, SCREEN_WIDTH / SCREEN_HEIGHT, 1, 10000);
+				camera.position.z = 400;
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color(0x62c7e0);
+
+				birds = [];
+				boids = []; //设置飞鸟的运动轨迹
+
+				for (var i = 0; i < 200; i++) {
+					// 给boids赋值
+					boid = boids[i] = new Boid();
+					//设置位置
+					boid.position.x = Math.random() * 400 - 200;
+					boid.position.y = Math.random() * 400 - 200;
+					boid.position.z = Math.random() * 400 - 200;
+					//设置沿某一方向的速度
+					boid.velocity.x = Math.random() * 2 - 1;
+					boid.velocity.y = Math.random() * 2 - 1;
+					boid.velocity.z = Math.random() * 2 - 1;
+					
+					boid.setAvoidWalls(true);//是否避墙
+					boid.setWorldSize(500,500,400);//设置运动环境大小
+					
+					//给birds赋值
+					bird=birds[i]=new THREE.Mesh(new Bird(),new THREE.MeshBasicMaterial({
+						Math.random()*0xffffff,
+						side:THREE.DoubleSide
+					}));
+					bird.phase=Math.floor(Math.random()*62.83);
+					scene.add(bird);//将飞鸟加入场景
+					
+				}
+
+
+
+
+				//创建渲染器
+				renderer = new THREE.CanvasRenderer();
+				renderer.setPixelRatio(window.devicePixelRatio);
+				renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+				document.body.appendChild(renderer.domElement); //zaibody中插入canvas
+
+
+			}
+
+			//窗口刷新，动画效果方法
+			function animate() {
+				requestAnimationFrame(animate);
+
+				render();
+			}
+
+
+			//渲染方法
+			function render() {
+				renderer.render(scene, camera);
+			}
+		</script>
+	</body>
+</html>

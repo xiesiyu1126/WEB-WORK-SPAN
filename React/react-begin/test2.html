@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .outer-div {
+        width: 606px;
+        height: 200px;
+        background-color: aqua;
+    }
+
+    .middle-div {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        background-color: azure;
+        float: left;
+        border: 1px solid gray;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* vertical-align: middle; */
+        /* justify-self: center;
+        -webkit-justify-self: center; */
+        /* justify-content: center;
+        -webkit-justify-content: center; */
+    }
+
+    .middle-div .box {
+        /* position: relative; */
+        /* left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%); */
+
+        width: 100px;
+        height: 100px;
+        background-color: gray;
+        margin:auto;
+        /* display: block; */
+        /* margin: 0 auto;
+        margin-top: 50px; */
+        /* margin: 50px; */
+    }
+
+    .box .text {
+        position:absolute;
+        width: 100px;
+        height: 20px;
+        background-color: salmon;
+        text-align: center;
+        line-height: 20px;
+        bottom: 0;
+    }
+</style>
+
+<body>
+
+
+
+    <div class="outer-div">
+        <div class="middle-div">
+            <div class="box">
+                <div class="text">content</div>
+            </div>
+        </div>
+        <div class="middle-div">
+            <div class="box">
+                <div class="text">content</div>
+            </div>
+        </div>
+        <div class="middle-div">
+            <div class="box">
+                <div class="text">content</div>
+            </div>
+        </div>
+    </div>
+    <div class="outer-div">
+        <div class="middle-div">
+            <div class="box">
+                <div class="text">content</div>
+            </div>
+        </div>
+        <div class="middle-div">
+            <div class="box">
+                <div class="text">content</div>
+            </div>
+        </div>
+        <div class="middle-div">
+            <div class="box">
+                <div class="text">content</div>
+            </div>
+        </div>
+    </div>
+    <div class="outer-div">
+        <div class="middle-div">
+            <div class="box">
+                <div class="text">content</div>
+            </div>
+        </div>
+        <div class="middle-div">
+            <div class="box">
+                <div class="text">content</div>
+            </div>
+        </div>
+        <div class="middle-div">
+            <div class="box">
+                <div class="text">content</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

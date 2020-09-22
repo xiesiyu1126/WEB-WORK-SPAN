@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定义组件的两种方式</title>
+</head>
+
+<body>
+
+    <div id="app"></div>
+
+
+
+    <script src="./lib/react.development.js"></script>
+    <script src="./lib/react-dom.development.js"></script>
+    <script src="./lib/babel.min.js"></script>
+
+
+    <script type="text/babel">
+        /**
+            组件声明的注意事项：
+            1、组件变量名首字母大写
+            2、标签要有结尾的标签 如<h1></h1>  不能写成<h1><h1>
+            3、只能有一个根节点
+        */    
+
+        //函数组件[简单组件]的声明方式
+        //简单组件通过HOOK可以使用state
+        function Simple(){
+            return(
+                <div>
+                        <ul>
+                            <li>我是简单的函数组件</li>
+                        </ul>
+                    </div>
+            )
+        }
+        //ReactDOM.render(<Simple/>,document.getElementById("app"));
+
+
+        //复杂组件[类组件]的声明方式
+        class Complex extends React.Component{
+            render(){
+                return(
+                    <div>
+                        <h1>我是复杂的组件</h1>
+                    </div>
+                )
+            }
+        }
+
+        //ReactDOM.render(<Complex/>,document.getElementById("app"));
+
+
+        //复杂组件+构造函数赋值
+        class Complex2 extends React.Component{
+            constructor(props){
+                super(props);//继承父组件一定要写super
+                this.state={
+                    msg:'构造赋值'
+                }
+            }
+            render(){
+                //ES6 结构赋值 获取state中的msg
+                const {msg}=this.state;
+                return(
+                    <div>
+                        <h1>{msg}</h1>
+                    </div>
+                )
+            }
+        }
+        ReactDOM.render(<Complex2/>,document.getElementById("app"));
+
+
+    </script>
+</body>
+
+</html>

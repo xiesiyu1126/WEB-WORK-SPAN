@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>希尔伯特曲线3D</title>
+
+		<style type="text/css">
+			body {
+				margin: 0;
+				overflow: hidden;
+			}
+		</style>
+		<script src="js/three/build/three.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/three/build/three.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/three/examples-js-geometries/hilbert3D.js" type="text/javascript" charset="utf-8"></script>
+		<!-- 引入检测器 判断canvas、webgl兼容性 -->
+		<script src="js/three/examples-js/Detector.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+
+
+
+		<script type="text/javascript">
+			if (!Detector.webgl) { //判断webgl的兼容性，如不浏览器不兼容 就不执行下面的方法
+				Detector.addGetWebGLMessage();
+			}
+			var mouseX = 0;
+			var mouseY = 0;
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			//初始化 场景、相机、渲染的变量
+			var scene, camera, renderer;
+
+			init(); //初始化方法
+			animate(); //动画
+
+			function init() {
+				//创建一个远景相机
+				// 参数：
+				// fov — 相机视锥体垂直视角
+				// aspect — 相机视锥体宽高比
+				// near — 相机视锥体近裁剪面
+				// far — 相机视锥体远裁剪面。				
+				camera = new THREE.PerspectiveCamera(33, window.innerWidth / window.innerHeight, 1, 10000);
+				camera.position.z = 1000; //设置相机z轴位置
+
+				// 创建一个场景
+				scene = new THREE.Scene();
+
+
+				//创建一个WebGL渲染器
+				renderer = new THREE.WebGLRenderer({
+					antialias: true //开启平滑效果
+				});
+				renderer.setPixelRatio(window.devicePixelRatio); //设置设备像素比
+				renderer.setSize(window.innerWidth, window.innerHeight); //设置渲染区域尺寸
+
+				document.body.appendChild(renderer.domElement); //body元素中插入canvas对象				
+
+				// 创建希尔伯特曲线3D 返回Vector3数组
+				//参数：
+				//200.0：总大小【长宽高】
+				//1 显示个数=2的(n-1)次方*2的(n-1)次方*2的(n-1)次方【2的(n-1)次方的三次方】
+				//0：表示不去掉一个角  !=0 表示去掉一个角 会发生变化
+				//1：表示不去掉一个角  !=1 表示去掉一个角 会发生变化
+				//2：表示不去掉一个角  !=2 表示去掉一个角 会发生变化
+				//3：表示不去掉一个角  !=3 表示去掉一个角 会发生变化
+				//...7 同上表示一个意思 只是去掉的角不一样
+				//【可以不设置总大小(200)之后的值】
+				var hilbertPoints = hilbert3D(new THREE.Vector3(0, 0, 0), 1000.0, 3);
+
+				//创建一个几何模型对象
+				var geometry = new THREE.BufferGeometry();
+
+				//设置分割数6个
+				var subdivisions = 6;
+				//初始化顶点位置坐标数组
+				var vertices = [];
+				//初始化顶点颜色数组
+				var colors = [];
+
+				//创建三维向量对象
+				var point = new THREE.Vector3();
+				//创建颜色对象
+				var color = new THREE.Color();
+
+				//CatmullRomCurve3通过一系列的点来创建一条平滑的曲线
+				var spline = new THREE.CatmullRomCurve3(hilbertPoints);
+
+				for (var i = 0; i < hilbertPoints.length * subdivisions; i++) {
+					var t = i / (hilbertPoints.length * subdivisions);
+					spline.getPoint(t, point); //getPoint(t) 返回一个在t上的Vector3 ，getPoint(t，point)，将返回的Vector3赋给point
+
+					vertices.push(point.x, point.y, point.z); //将顶点放入顶点位置坐标数组中
+
+					//设置顶点颜色						
+					color.setHSL(0.6, 1.0, Math.max(0, -point.x / 200) + 0.5);
+					colors.push(color.r, color.g, color.b);
+				}
+
+				//给模型设置顶点位置
+				geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+				//给模型设置顶点颜色
+				geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+				//geometry.addAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+
+				var material = new THREE.LineBasicMaterial({
+					color: 0x15bbf9,
+					vertexColors: THREE.VertexColors //以顶点颜色为准
+				})
+
+				var line, p,
+					scale = 0.4, //缩放大小
+					d = 0; //设置z轴水平位置
+
+				//设置渲染对象参数数组【材质、缩放大小、xyz、几何模型】
+				var parameters = [
+					[material, scale * 1.5, [-d, -d / 2, 0], geometry],
+				];
+
+
+				for (var i = 0; i < parameters.length; i++) {
+					p = parameters[i];
+					line = new THREE.Line(p[3], p[0]);
+					line.scale.x = line.scale.y = line.scale.z = p[1];
+					line.position.x = p[2][0];
+					line.position.y = p[2][1];
+					line.position.z = p[2][2];
+					scene.add(line);
+				}
+
+				//添加鼠标移动的监听事件
+				document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+			}
+
+			//设置鼠标移动事件
+			function onDocumentMouseMove(event) {
+				//修改鼠标位置 在渲染时控制相机位置
+				mouseX = event.clientX - windowHalfX;
+				mouseY = event.clientY - windowHalfY;
+			}
+			
+			
+
+			function animate() {
+				requestAnimationFrame(animate);
+				render();
+			}
+
+			function render() {
+				//设置相机位置
+				camera.position.x += (mouseX - camera.position.x) * 0.05;
+				camera.position.y += (-mouseY + 200 - camera.position.y) * 0.05;
+				//设置相机方向（指向的场景对象）
+
+				camera.lookAt(scene.position);
+				var time = Date.now() * 0.0005;
+				for (var i = 0; i < scene.children.length; i++) {
+					var obj = scene.children[i];
+					if (obj.isLine) {
+						//设置渲染对象y轴旋转速度
+						obj.rotation.y = time * (i % 2 ? 0.001 : -0.1);
+
+					}
+				}
+
+
+				renderer.render(scene, camera);
+			}
+		</script>
+	</body>
+</html>

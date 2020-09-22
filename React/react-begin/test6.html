@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        //正则表达式替换字符串  可以使用replace方法
+
+        var str =
+            `<?xml version='1.0' encoding='utf-8'?> <widget id="xx.xxx.xx" version='1.0' xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0"> <chcp> <native-interface version="1" /><auto-download enabled="false" /> <auto-install enabled="false" /></chcp></widget>`;
+
+        //直接使用字符串的方式
+        //console.log(str.replace(/version='1.0'{2}/g, `version="1.1"`));
+        console.log(str.replace(/<widget id="xx.xxx.xx" version='1.0'/, `<widget id="xx.xxx.xx" version="1.1"`));
+
+        //遍历获取第二个version='1.0'再替换       
+        // var text1 = ""
+        // var arr = str.split(/version='1.0'/)
+        // for (var i = 0; i < arr.length; i++) {
+
+        //     if (i == 0) {
+        //         arr[i] = arr[i] + `version='1.0'`;
+        //     }
+        //     if (i == 1) {
+        //         arr[i] = arr[i] + `version='1.1'`;
+        //     }
+        //     text1 += arr[i];
+         
+        // }
+        //console.log(text1);
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function add(num1,num2){
+            //浮点数用二进制表达时是无穷的，所以可先*10转成整数再/10
+            var sum=(num1*10+num2*10)/10;
+            
+            return sum;            
+        }
+        console.log("输出结果:"+add(0.1,0.2));
+        if(add(0.1,0.2)===0.3){
+            console.log(true);
+        }
+
+    </script>
+</body>
+</html>

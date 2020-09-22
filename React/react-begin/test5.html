@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        //算出10的平方根 ==>X*X=10
+        for (var i = 3; i < 4; i += 0.01) {
+            var num = ((i * 100) * (i * 100)) / 10000;
+            var toFixedNum = num.toFixed(2);
+            //console.log(toFixedNum);
+            if (toFixedNum <= 10.01 && toFixedNum >= 9.99) {
+                console.log(i);
+                console.log(toFixedNum)
+            }
+        }
+    </script>
+</body>
+
+</html>

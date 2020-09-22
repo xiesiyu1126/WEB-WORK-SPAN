@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组件的三大属性--ref</title>
+</head>
+
+<body>
+
+    <div id="app"></div>
+
+
+
+    <script src="./lib/react.development.js"></script>
+    <script src="./lib/react-dom.development.js"></script>
+    <script src="./lib/babel.min.js"></script>
+
+
+    <script type="text/babel">
+    //ref  组件内部的标签可以定义ref属性来标识自己
+    //
+    class MyComponent extends React.Component{
+        constructor(props){
+            super(props);
+            this.state={
+                value:''
+            }
+            //this.doChange=this.doChange.bind(this);
+        }
+
+        doClick=()=>{
+            console.log(this.input);//获取的dom
+            console.log(this.input.value);//获取的input中输入的值
+            console.log(this.refs.myP);//获取的dom
+        }
+        
+        doChange=(e)=>{
+            console.log("受控组件的内容："+e.target.value)
+            this.setState({
+                value:e.target.value
+            })
+        }
+        render(){
+            const {value}=this.state;
+            return(
+                <div>                         
+                    <p>非控组件--不受state控制 通过refs属性控制</p>
+                    <p ref="myP">这是一个P标签</p>
+                    
+                    <p>受控组件-受state控制</p>
+                    <input type="text" value={value} onChange={this.doChange}/>
+                    <br/>
+
+                    <input type="text" ref={(input)=>{this.input=input}}/>
+                    <br/>
+                    <button onClick={this.doClick}>点击</button>
+                </div>
+            )
+        }
+    }
+    ReactDOM.render(<MyComponent />,document.getElementById("app"));
+
+
+        
+    </script>
+</body>
+
+</html>

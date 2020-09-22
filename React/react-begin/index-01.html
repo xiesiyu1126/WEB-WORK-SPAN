@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>react 入门</title>
+</head>
+
+<body>
+    <!--这是一个 真实dom根节点（将虚拟dom挂载的地方） -->
+    <div id="app"></div>
+    
+    
+    <!-- react核心标签库 -->
+    <script src="./lib/react.development.js"></script>
+    <!-- react提供操作dom的扩展库 -->
+    <script src="./lib/react-dom.development.js"></script>
+    <!-- 解析jsx语法 -->
+    <script src="./lib/babel.min.js"></script>
+    
+    
+    
+    <script type="text/babel">
+        // //jsx语法 【h1 既不是一个标签也不是一个字符串】
+        // var msg="你好，世界！";
+        // var h1=<h1>{msg}</h1>
+
+        // //ReactDOM.render h1转化成了一个js对象
+        // ReactDOM.render(h1,document.getElementById("app"));
+
+        // //纯js的方法  了解不推荐使用
+        // var msg="纯JS的方法";
+        // //React使用createElement创建一个元素【赋予标签、id，文本内容】
+        // var viturDom=React.createElement('h1',{id:'myId'},msg);
+        // ReactDOM.render(viturDom,document.getElementById("app"));
+
+
+        //将 arr 添加到ul中渲染
+        var arr=["html","css","css3","node","uniapp"];
+        //方法一：map 循环
+        // const ul=<ul>
+        // {
+        //     arr.map((item,index)=>{
+        //         return <li key={index}>{item}</li>
+        //     })
+
+        // }
+        // </ul>
+        // ReactDOM.render(ul,document.getElementById("app"));
+
+        //方法二：数组 循环
+        var list=[];
+        arr.forEach((item,index)=>{
+            list.push(<li key={index}>{item}</li>);
+        })
+        const ul=<ul>{list}</ul>
+        ReactDOM.render(ul,document.getElementById("app"));
+
+    </script>
+</body>
+
+</html>

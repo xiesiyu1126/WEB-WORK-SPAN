@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>父子组件之间的传值</title>
+</head>
+
+<body>
+    <div id="app"></div>
+
+
+
+    <script src="./lib/react.development.js"></script>
+    <script src="./lib/react-dom.development.js"></script>
+    <script src="./lib/babel.min.js"></script>
+
+    <script type="text/babel">
+
+        class App extends React.Component{
+            state={
+                list:[
+                    "qaz",
+                    "iop",
+                    "123"
+                ]
+            }
+            doAdd=(value)=>{
+                console.log("子组件传过来的值："+value);
+                const {list}=this.state;
+                list.unshift(value);
+                this.setState({
+                    list
+                })
+            }
+            render(){
+                const {list}=this.state;
+                return(
+                    <div>
+                        <Add add={this.doAdd}/>
+                        <List list={list}/>
+                    </div>
+                )
+            }
+
+
+
+        }
+
+        //子组件通过事件绑定props属性进行传值
+        class Add extends React.Component{
+            doAdd=()=>{
+                //获取需要添加的内容 
+                console.log(this.input.value);
+                //将add添加到props中
+                this.props.add(this.input.value);
+
+            }
+            render(){
+                return(
+                    <div>
+                        <input type="text"  ref={(input)=>{this.input=input}}/>
+                        <button onClick={this.doAdd}>添加</button>
+                    </div>
+                )
+            }
+
+        }
+
+    //父组件通过props向子组件传值，子组件通过props接收父组件传来的值
+    function List(props){
+        console.log(props);
+        return(
+            <div>
+                <ul>
+                    {
+                        props.list.map((item,index)=>{
+                            return(
+                                <li key={index}>{item}</li>
+                            )
+                        })
+                    }
+                </ul>
+            </div>
+        )
+    }
+
+    ReactDOM.render(<App/>,document.getElementById("app"));
+    </script>
+</body>
+
+</html>

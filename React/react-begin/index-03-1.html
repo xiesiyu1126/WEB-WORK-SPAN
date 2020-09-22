@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组件的三大属性--state</title>
+</head>
+
+<body>
+
+    <div id="app"></div>
+
+
+
+    <script src="./lib/react.development.js"></script>
+    <script src="./lib/react-dom.development.js"></script>
+    <script src="./lib/babel.min.js"></script>
+
+
+    <script type="text/babel">
+        //state属性是定义在组件里面的
+        class MyComponent extends React.Component{
+         //第一种方式 事件在标签中绑定this
+
+        // state={
+        //     msg:'我是复杂组件'
+        // }
+
+        // handleClick(){
+        //     //state更新的方式 必须使用setState
+        //     //setState更新后会重新渲染
+        //     this.setState({
+        //         msg:'我变了'
+        //     })
+        // }
+
+        //第二种方式   初始化事件并绑定this     
+        // constructor(props){
+        //     super(props);
+        //     this.state={
+        //         msg:'我是复杂组件'
+        //     }    
+        //     this.handleClick=this.handleClick.bind(this);
+        // }
+        
+
+        // handleClick(){
+        //     this.setState({
+        //         msg:'我变了'
+        //     })
+        // }
+
+        //第三种方式   箭头函数
+        constructor(props){
+            super(props);
+            this.state={
+                msg:'我是复杂组件'
+            }    
+            this.handleClick=this.handleClick.bind(this);
+        }
+        
+        //箭头函数不会创建自己的this，它只会从自己的作用域链的上一层继承this【所以此时的this就在组件this】
+        handleClick=()=>{
+            this.setState({
+                msg:'我变了'
+            })
+        }
+
+
+
+        render(){
+        
+            const {msg}=this.state;
+            console.log("渲染====");
+            return(
+                <div>     
+                    <h1 onClick={this.handleClick.bind(this)}>{msg}</h1>
+                </div>
+            )
+        }
+    }
+    ReactDOM.render(<MyComponent />,document.getElementById("app"));
+
+
+        
+    </script>
+</body>
+
+</html>

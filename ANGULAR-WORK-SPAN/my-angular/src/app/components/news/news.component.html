@@ -1,0 +1,29 @@
+<!-- 引入header -->
+<app-header></app-header>
+
+<!-- 数据绑定 -->
+<h1>{{title}}</h1>
+
+<!-- 属性绑定 中括号中加属性名="赋值变量名"-->
+<div [title]="msg">
+  这个是一个div
+</div>
+<!-- 绑定html 需要使用innerHTML属性因为是动态绑定所以需要加[]-->
+
+<div [innerHTML]="content"></div>
+
+<!-- 使用``数据不能直接显示html标签 还是需要使用innerHTML属性 -->
+<div>{{testContent}}</div>
+
+
+<!-- 数据循环 指令：*ngfor -->
+<ul>
+  <li *ngFor="let num of arr">{{num}}</li>
+</ul>
+
+<!-- 数据循环 下标显示 -->
+<ul>
+  <li *ngFor="let user of userList;let key=index">
+    下标：{{key}}---{{user.userName}}的年龄是{{user.userAge}}
+  </li>
+</ul>
